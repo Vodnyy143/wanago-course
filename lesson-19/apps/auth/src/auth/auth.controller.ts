@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   HttpCode,
@@ -7,6 +8,7 @@ import {
   Post,
   Req,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -24,6 +26,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @UseInterceptors(ClassSerializerInterceptor)
   async register(
     @Body() dto: RegisterDto,
     @Req() req: Request,
@@ -40,6 +43,7 @@ export class AuthController {
   @Public()
   @Post('log-in')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(ClassSerializerInterceptor)
   async login(
     @Body() dto: LoginDto,
     @Req() req: Request,
@@ -80,6 +84,7 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(ClassSerializerInterceptor)
   async refreshTokens(
     @Cookie(REFRESH_COOKIE) token: string,
     @Req() req: Request,
