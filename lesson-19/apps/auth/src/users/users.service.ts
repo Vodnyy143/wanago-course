@@ -1,11 +1,10 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
+import * as ExcelJS from 'exceljs';
 import { Repository } from 'typeorm';
+import { Response } from 'express';
+
+import { UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
@@ -26,18 +25,34 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
-  async getUserById(id: string) {
-    const user = await this.usersRepository.findOne({
-      where: { id },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+  async generateUsersXls() {
+    const users = await this.getAllUsers();
 
-    return user;
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('TestExportXLS');
+
+    worksheet.columns = [
+      { header: 'id', key: 'id' },
+      { header: 'firstName', key: 'firstName' },
+      { header: 'lastName', key: 'lastName' },
+      { header: 'email', key: 'email' },
+    ];
+
+    users.map((user) => {
+      worksheet.addRow({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    return buffer;
   }
 
-  getAllUsers() {
+  private getAllUsers() {
     return this.usersRepository.find();
   }
 
