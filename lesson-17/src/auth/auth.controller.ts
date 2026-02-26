@@ -8,22 +8,22 @@ import {
   Req,
   Res,
   UseGuards,
-} from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dtos/register.dto';
-import { Public } from '@app/common';
-import { cookieFactory } from '@app/common/auth/cookie.lib';
-import { ACCESS_COOKIE, REFRESH_COOKIE, type RequestWithUser } from './types';
-import { RefreshGuard } from './guards/refresh.guard';
-import { LoginDto } from './dtos/login.dto';
+} from "@nestjs/common";
+import type { Request, Response } from "express";
+import { AuthService } from "./auth.service";
+import { RegisterDto } from "./dtos/register.dto";
+import { Public } from "@app/common";
+import { cookieFactory } from "@app/common/auth/cookie.lib";
+import { ACCESS_COOKIE, REFRESH_COOKIE, type RequestWithUser } from "./types";
+import { RefreshGuard } from "./guards/refresh.guard";
+import { LoginDto } from "./dtos/login.dto";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @Post('register')
+  @Post("register")
   async register(
     @Body() dto: RegisterDto,
     @Req() req: Request,
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @Public()
-  @Post('login')
+  @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() dto: LoginDto,
@@ -55,12 +55,12 @@ export class AuthController {
     };
   }
 
-  @Get('me')
+  @Get("me")
   me(@Req() req: RequestWithUser) {
     return req.user;
   }
 
-  @Post('logout')
+  @Post("logout")
   @UseGuards(RefreshGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
@@ -75,7 +75,7 @@ export class AuthController {
   }
 
   @Public()
-  @Post('refresh')
+  @Post("refresh")
   @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshGuard)
   async refresh(

@@ -1,8 +1,8 @@
-import { z } from 'zod';
-import { createZodDto } from 'nestjs-zod';
+import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 const LoginSchema = z.object({
-  email: z.string().includes('@'),
+  email: z.string().includes("@"),
   password: z.string().min(6),
 });
 

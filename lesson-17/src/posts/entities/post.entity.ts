@@ -4,8 +4,8 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-} from 'typeorm';
-import { UserEntity } from '../../users/entities/user.entity';
+} from "typeorm";
+import { UserEntity } from "../../users/entities/user.entity";
 
 @Entity()
 export class PostEntity {

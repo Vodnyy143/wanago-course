@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { createZodDto } from 'nestjs-zod';
+import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 const UpdateUserSchema = z.object({
   username: z.string().optional(),

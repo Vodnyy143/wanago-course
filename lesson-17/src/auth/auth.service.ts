@@ -1,12 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { RegisterDto } from './dtos/register.dto';
-import { UserEntity } from '../users/entities/user.entity';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { AccessPayload, RefreshPayload } from './types';
-import { EnvService } from '../env/env.service';
-import { LoginDto } from './dtos/login.dto';
-import { HashService } from '../hash/hash.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UsersService } from "../users/users.service";
+import { RegisterDto } from "./dtos/register.dto";
+import { UserEntity } from "../users/entities/user.entity";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import { AccessPayload, RefreshPayload } from "./types";
+import { EnvService } from "../env/env.service";
+import { LoginDto } from "./dtos/login.dto";
+import { HashService } from "../hash/hash.service";
 
 @Injectable()
 export class AuthService {
@@ -32,14 +32,14 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const findUser = await this.usersService.findByEmail(loginDto.email);
-    if (!findUser) throw new UnauthorizedException('Invalid credentials');
+    if (!findUser) throw new UnauthorizedException("Invalid credentials");
 
     const matchingPasswords = await this.hashService.verify(
       loginDto.password,
       findUser.hashedPassword,
     );
     if (!matchingPasswords)
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
 
     const { accessToken, refreshToken } = await this.getTokens(findUser);
 
@@ -78,14 +78,14 @@ export class AuthService {
     const user = await this.usersService.findOneById(payload.userId);
 
     if (!user || !user.currentRefreshToken)
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException("Invalid refresh token");
 
     const matchingTokens = await this.hashService.verify(
       refreshToken,
       user.currentRefreshToken,
     );
     if (!matchingTokens)
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException("Invalid refresh token");
 
     return user;
   }
@@ -103,8 +103,8 @@ export class AuthService {
     };
 
     const refreshToken = await this.jwtService.signAsync(refreshPayload, {
-      secret: this.envService.get('REFRESH_SECRET'),
-      expiresIn: `${this.envService.get('REFRESH_EXP')}d`,
+      secret: this.envService.get("REFRESH_SECRET"),
+      expiresIn: `${this.envService.get("REFRESH_EXP")}d`,
     } as JwtSignOptions);
 
     return {

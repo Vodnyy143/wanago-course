@@ -10,36 +10,36 @@ import {
   Req,
   UploadedFile,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import * as Multer from 'multer';
-import type { Express } from 'express';
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import * as Multer from "multer";
+import type { Express } from "express";
 
-import { UsersService } from './users.service';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import type { RequestWithUser } from '../auth/types';
+import { UsersService } from "./users.service";
+import { UpdateUserDto } from "./dtos/update-user.dto";
+import type { RequestWithUser } from "../auth/types";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Patch(':id')
+  @Patch(":id")
   updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param("id", ParseIntPipe) id: number,
     @Body() dto: UpdateUserDto,
   ) {
     return this.usersService.updateUser(id, dto);
   }
 
-  @Delete('avatar')
+  @Delete("avatar")
   async deleteAvatar(@Req() req: RequestWithUser) {
     console.log(req.user.id);
     await this.usersService.deleteAvatar(req.user.id);
-    return { message: 'Successfully delete avatar' };
+    return { message: "Successfully delete avatar" };
   }
 
-  @Post('avatar')
-  @UseInterceptors(FileInterceptor('avatar'))
+  @Post("avatar")
+  @UseInterceptors(FileInterceptor("avatar"))
   async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: RequestWithUser,
@@ -49,8 +49,8 @@ export class UsersController {
     return { avatarUrl };
   }
 
-  @Delete(':id')
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
+  @Delete(":id")
+  deleteUser(@Param("id", ParseIntPipe) id: number) {
     return this.usersService.deleteUser(id);
   }
 

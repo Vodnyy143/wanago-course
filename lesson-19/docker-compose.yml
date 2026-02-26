@@ -1,0 +1,28 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    volumes:
+      - /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    env_file:
+      - ./rabbitmq.env
+
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'nestjs'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import * as argon2 from 'argon2';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import * as argon2 from "argon2";
 
 @Injectable()
 export class HashService {
@@ -7,8 +7,8 @@ export class HashService {
     try {
       return argon2.hash(raw);
     } catch (e: unknown) {
-      console.error('Error hashing raw ', e);
-      throw new BadRequestException('Error hashing raw');
+      console.error("Error hashing raw ", e);
+      throw new BadRequestException("Error hashing raw");
     }
   }
 
@@ -16,8 +16,8 @@ export class HashService {
     try {
       return argon2.verify(hashed, raw);
     } catch (e: unknown) {
-      console.error('Error matching raws', e);
-      throw new BadRequestException('Error matching raws');
+      console.error("Error matching raws", e);
+      throw new BadRequestException("Error matching raws");
     }
   }
 }

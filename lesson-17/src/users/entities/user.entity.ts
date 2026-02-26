@@ -4,8 +4,8 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { PostEntity } from '../../posts/entities/post.entity';
+} from "typeorm";
+import { PostEntity } from "../../posts/entities/post.entity";
 
 @Entity()
 export class UserEntity {

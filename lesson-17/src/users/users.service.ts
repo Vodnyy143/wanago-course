@@ -3,20 +3,20 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+} from "@nestjs/common";
+import { DataSource, Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
-import { UserEntity } from './entities/user.entity';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { HashService } from '../hash/hash.service';
-import { MinioService } from 'nestjs-minio-s3';
-import type { Express } from 'express';
+import { UserEntity } from "./entities/user.entity";
+import { CreateUserDto } from "./dtos/create-user.dto";
+import { UpdateUserDto } from "./dtos/update-user.dto";
+import { HashService } from "../hash/hash.service";
+import { MinioService } from "nestjs-minio-s3";
+import type { Express } from "express";
 
 @Injectable()
 export class UsersService {
-  private readonly AVATARS_BUCKET = 'avatars';
+  private readonly AVATARS_BUCKET = "avatars";
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
@@ -30,7 +30,7 @@ export class UsersService {
       where: { email: createUserDto.email },
     });
     if (existsUser) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException("User already exists");
     }
 
     try {
@@ -44,8 +44,8 @@ export class UsersService {
       });
       return this.usersRepository.save(newUser);
     } catch (e: unknown) {
-      console.error('Error creating user ', e);
-      throw new BadRequestException('Error creating user');
+      console.error("Error creating user ", e);
+      throw new BadRequestException("Error creating user");
     }
   }
 
@@ -54,7 +54,7 @@ export class UsersService {
       where: { id },
     });
     if (!findUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     try {
@@ -63,8 +63,8 @@ export class UsersService {
         email: updateUserDto.email,
       });
     } catch (e: unknown) {
-      console.error('Error updating user', e);
-      throw new BadRequestException('Error updating user');
+      console.error("Error updating user", e);
+      throw new BadRequestException("Error updating user");
     }
   }
 
@@ -77,8 +77,8 @@ export class UsersService {
         currentRefreshToken: currentRefreshToken! ?? null,
       });
     } catch (e) {
-      console.error('Error updating refresh token ', e);
-      throw new BadRequestException('Error updating refresh token');
+      console.error("Error updating refresh token ", e);
+      throw new BadRequestException("Error updating refresh token");
     }
   }
 
@@ -87,14 +87,14 @@ export class UsersService {
       where: { id },
     });
     if (!findUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     try {
       await this.usersRepository.delete(id);
     } catch (e: unknown) {
-      console.error('Error deleting user', e);
-      throw new BadRequestException('Error deleting user');
+      console.error("Error deleting user", e);
+      throw new BadRequestException("Error deleting user");
     }
   }
 
@@ -128,15 +128,15 @@ export class UsersService {
     return await this.dataSource.transaction(async (manager) => {
       const user = await manager.findOne(UserEntity, {
         where: { id: userId },
-        select: ['id', 'avatarUrl'],
+        select: ["id", "avatarUrl"],
       });
       if (!user) {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException("User not found");
       }
 
       const oldAvatarUrl = user.avatarUrl as string;
 
-      const key = `${userId}-${Date.now()}.${file.originalname.split('.').pop()}`;
+      const key = `${userId}-${Date.now()}.${file.originalname.split(".").pop()}`;
 
       const newAvatarUrl = await this.minioService.upload(
         this.AVATARS_BUCKET,
@@ -157,7 +157,7 @@ export class UsersService {
             await this.minioService.delete(this.AVATARS_BUCKET, oldKey);
           }
         } catch (e: unknown) {
-          console.error('Error deleting old avatar ', e);
+          console.error("Error deleting old avatar ", e);
         }
       }
 
@@ -169,10 +169,10 @@ export class UsersService {
     return await this.dataSource.transaction(async (manager) => {
       const user = await manager.findOne(UserEntity, {
         where: { id: userId },
-        select: ['id', 'avatarUrl'],
+        select: ["id", "avatarUrl"],
       });
       if (!user || !user?.avatarUrl) {
-        throw new NotFoundException('User or avatar not found');
+        throw new NotFoundException("User or avatar not found");
       }
 
       await manager.update(UserEntity, userId, { avatarUrl: null });
@@ -186,7 +186,7 @@ export class UsersService {
           await this.minioService.delete(this.AVATARS_BUCKET, key);
         }
       } catch (e: unknown) {
-        console.error('Error deleting avatar from s3', e);
+        console.error("Error deleting avatar from s3", e);
       }
     });
   }

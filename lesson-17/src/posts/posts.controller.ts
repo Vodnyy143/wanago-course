@@ -9,15 +9,15 @@ import {
   Post,
   Query,
   Req,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { PostsService } from './posts.service';
-import { CreatePostDto } from './dtos/create-post.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
-import { PaginationPostsParam } from './dtos/pagination-posts.param';
-import type { RequestWithUser } from '../auth/types';
+import { PostsService } from "./posts.service";
+import { CreatePostDto } from "./dtos/create-post.dto";
+import { UpdatePostDto } from "./dtos/update-post.dto";
+import { PaginationPostsParam } from "./dtos/pagination-posts.param";
+import type { RequestWithUser } from "../auth/types";
 
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -26,16 +26,16 @@ export class PostsController {
     return this.postsService.createPost(req.user.id, dto);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   updatePost(
-    @Param('id', ParseIntPipe) id: number,
+    @Param("id", ParseIntPipe) id: number,
     @Body() dto: UpdatePostDto,
   ) {
     return this.postsService.updatePost(id, dto);
   }
 
-  @Delete(':id')
-  deletePost(@Param('id', ParseIntPipe) id: number) {
+  @Delete(":id")
+  deletePost(@Param("id", ParseIntPipe) id: number) {
     return this.postsService.deletePost(id);
   }
 
@@ -44,8 +44,8 @@ export class PostsController {
     return this.postsService.findAllPosts(offset, limit);
   }
 
-  @Get(':id')
-  findOnePost(@Param('id', ParseIntPipe) id: number) {
+  @Get(":id")
+  findOnePost(@Param("id", ParseIntPipe) id: number) {
     return this.postsService.findOnePost(id);
   }
 }

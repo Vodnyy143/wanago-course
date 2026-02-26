@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { createZodDto } from 'nestjs-zod';
+import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 const PaginationPostsParamSchema = z.object({
   offset: z.coerce.number().min(0).optional(),
