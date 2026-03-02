@@ -8,8 +8,6 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
-    env_file:
-      - ./rabbitmq.env
 
   auth:
     image: postgres:16-alpine

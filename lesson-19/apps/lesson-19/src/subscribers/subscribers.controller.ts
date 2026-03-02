@@ -1,15 +1,29 @@
 import { Controller } from '@nestjs/common';
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dtos/create-subscriber.dto';
-import { MessagePattern } from '@nestjs/microservices';
+import {
+  Ctx,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 
 @Controller('subscribers')
 export class SubscribersController {
   constructor(private readonly subscribersService: SubscribersService) {}
 
   @MessagePattern({ cmd: 'add-subscriber' })
-  addSubscriber(dto: CreateSubscriberDto) {
-    return this.subscribersService.addSubscriber(dto);
+  async addSubscriber(
+    @Payload() dto: CreateSubscriberDto,
+    @Ctx() context: RmqContext,
+  ) {
+    const newSubscriber = await this.subscribersService.addSubscriber(dto);
+
+    const channel = context.getChannelRef();
+    const originalMessage = context.getMessage();
+    channel.ack(originalMessage);
+
+    return newSubscriber;
   }
 
   @MessagePattern({ cmd: 'get-subscribers' })
